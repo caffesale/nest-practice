@@ -1,6 +1,8 @@
 import {
   Controller,
   Get,
+  ParseIntPipe,
+  DefaultValuePipe,
   Post,
   Ip,
   Headers,
@@ -14,14 +16,16 @@ import {
 
 @Controller('users')
 export class UsersController {
-  @Get()
-  public getUsers() {
-    return 'You sent a get require to users endpoint';
-  }
-
-  @Get(':id')
-  public getUser(@Param('id') id: any, @Query('limit') limit: number) {
-    return `You sent a get require to user ${id} endpoint with ${limit}`;
+  @Get('{/:id}')
+  public getUser(
+    @Param('id', new DefaultValuePipe(1), ParseIntPipe) id: number,
+    @Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit: number,
+    @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number,
+  ) {
+    console.log(id);
+    console.log(limit);
+    console.log(page);
+    return `You sent a get require to user ${limit} and ${page}`;
   }
 
   @Post()
