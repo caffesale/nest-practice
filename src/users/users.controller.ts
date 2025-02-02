@@ -4,8 +4,6 @@ import {
   ParseIntPipe,
   DefaultValuePipe,
   Post,
-  Ip,
-  Headers,
   Patch,
   Put,
   Delete,
@@ -13,30 +11,25 @@ import {
   Body,
   Query,
 } from '@nestjs/common';
+import { CreateUserDto } from './dtos/create-user.dto';
+import { GetUsersParamDto } from './dtos/get-users-param';
+import { PatchUserDto } from './dtos/patch-user.dto';
 
 @Controller('users')
 export class UsersController {
   @Get('{/:id}')
   public getUser(
-    @Param('id', new DefaultValuePipe(1), ParseIntPipe) id: number,
+    @Param() getUsersParamDto: GetUsersParamDto,
     @Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit: number,
     @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number,
   ) {
-    console.log(id);
-    console.log(limit);
-    console.log(page);
+    console.log(getUsersParamDto);
     return `You sent a get require to user ${limit} and ${page}`;
   }
 
   @Post()
-  public createUsers(
-    @Body() request: any,
-    @Headers() headers: any,
-    @Ip() ip: any,
-  ) {
-    console.log(request);
-    console.log(headers);
-    console.log(ip);
+  public createUsers(@Body() createUserDto: CreateUserDto) {
+    console.log(createUserDto instanceof CreateUserDto);
     return 'You sent a post require to users endpoint';
   }
 
@@ -53,5 +46,11 @@ export class UsersController {
   @Delete()
   public DeleteUsers() {
     return 'You sent a delete require to users endpoint';
+  }
+
+  @Patch()
+  public patchUser(@Body() patchUserDto: PatchUserDto) {
+    console.log(patchUserDto);
+    return 'You sent a patch require to users endpoint';
   }
 }
