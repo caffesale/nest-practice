@@ -30,7 +30,7 @@ export class UsersController {
   }
 
   @Get(':id')
-  public getUserById(@Param() id: number) {
+  public getUserById(@Param() id: string) {
     return this.usersService.findOneById(id);
   }
 
