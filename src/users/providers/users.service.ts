@@ -11,7 +11,6 @@ export class UsersService {
 
   findAll(getUsersParamDto: GetUsersParamDto, limit: number, page: number) {
     const isAuth = this.authService.isAuth();
-    console.log(isAuth);
     return [
       { firstName: 'John', email: 'john@doe.com' },
       { firstName: 'Alice', email: 'alice@doe.com' },
