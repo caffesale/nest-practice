@@ -6,7 +6,9 @@ import {
   IsNotEmpty,
   IsOptional,
   IsString,
+  IsUrl,
   Matches,
+  MaxLength,
   MinLength,
   ValidateNested,
 } from 'class-validator';
@@ -19,6 +21,7 @@ export class CreatePostDTO {
   @IsString()
   @IsNotEmpty()
   @MinLength(4)
+  @MaxLength(512)
   title: string;
 
   @IsEnum(PostType)
@@ -31,6 +34,7 @@ export class CreatePostDTO {
     message:
       'A slug should be al small letters and uses only "-" and without spaces. For example "my-url"',
   })
+  @MaxLength(256)
   slug: string;
 
   @IsEnum(postStatus)
@@ -47,6 +51,8 @@ export class CreatePostDTO {
 
   @IsString()
   @IsOptional()
+  @MaxLength(1024)
+  @IsUrl()
   featuredImageUrl?: string;
 
   @IsISO8601()
@@ -67,5 +73,5 @@ export class CreatePostDTO {
   @IsArray()
   @ValidateNested({ each: true })
   @Type(() => CreatePostMetaOptionsDTO)
-  metaOptions: CreatePostMetaOptionsDTO[];
+  metaOptions?: CreatePostMetaOptionsDTO[];
 }
