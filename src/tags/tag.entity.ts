@@ -22,7 +22,7 @@ export class Tag {
 
   @Column({
     type: 'varchar',
-    length: 512,
+    length: 256,
     nullable: false,
     unique: true,
   })
@@ -32,20 +32,20 @@ export class Tag {
     type: 'text',
     nullable: true,
   })
-  description: string;
+  description?: string;
 
   @Column({
     type: 'text',
     nullable: true,
   })
-  schema: string;
+  schema?: string;
 
   @Column({
     type: 'varchar',
     length: 1024,
     nullable: true,
   })
-  featuredImageUrl: string;
+  featuredImageUrl?: string;
 
   @CreateDateColumn()
   createDate: Date;
