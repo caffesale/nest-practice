@@ -70,8 +70,7 @@ export class CreatePostDTO {
   tags?: string[];
 
   @IsOptional()
-  @IsArray()
   @ValidateNested({ each: true })
   @Type(() => CreatePostMetaOptionsDTO)
-  metaOptions?: CreatePostMetaOptionsDTO[];
+  metaOptions?: CreatePostMetaOptionsDTO;
 }

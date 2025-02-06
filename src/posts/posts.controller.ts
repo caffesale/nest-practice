@@ -18,6 +18,6 @@ export class PostsController {
     type: CreatePostDTO,
   })
   public createPosts(@Body() createPostDto: CreatePostDTO) {
-    console.log(createPostDto);
+    return this.postService.create(createPostDto);
   }
 }
