@@ -76,7 +76,6 @@ export class Post {
   @OneToOne(() => MetaOption, (metaOptions) => metaOptions.post, {
     cascade: true,
     eager: true,
-    nullable: true,
   })
   @JoinColumn()
   metaOptions?: MetaOption;

@@ -30,14 +30,7 @@ export class PostsService {
   }
 
   public async delete(id: number) {
-    // Find the post
-    let inversePost = await this.metaOptionsRepository.find({
-      where: { id: post?.metaOptions?.id },
-      relations: {
-        post: true,
-      },
-    });
-    // confirmation
+    await this.postsRepository.delete(id);
     return { deleted: true, id };
   }
 }
