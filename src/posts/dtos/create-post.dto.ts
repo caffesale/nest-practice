@@ -1,6 +1,7 @@
 import {
   IsArray,
   IsEnum,
+  IsInt,
   IsISO8601,
   IsJSON,
   IsNotEmpty,
@@ -61,16 +62,15 @@ export class CreatePostDTO {
 
   @IsOptional()
   @IsArray()
-  @IsString({
-    each: true,
-  })
-  @MinLength(3, {
-    each: true,
-  })
-  tags?: string[];
+  @IsInt({ each: true })
+  tags?: number[];
 
   @IsOptional()
   @ValidateNested({ each: true })
   @Type(() => CreatePostMetaOptionsDTO)
   metaOptions?: CreatePostMetaOptionsDTO;
+
+  @IsNotEmpty()
+  @IsInt()
+  authorId: number;
 }
