@@ -10,6 +10,7 @@ import { TagsModule } from 'src/tags/tags.module';
 @Module({
   providers: [PostsService],
   controllers: [PostsController],
+  exports: [Post],
   imports: [
     UsersModule,
     TagsModule,

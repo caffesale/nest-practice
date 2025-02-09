@@ -54,7 +54,7 @@ export class UsersController {
   }
 
   @Get(':id')
-  public getUserById(@Param() id: string) {
+  public getUserById(@Param('id', ParseIntPipe) id: number) {
     return this.usersService.findOneById(id);
   }
 
