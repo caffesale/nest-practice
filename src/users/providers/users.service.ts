@@ -1,5 +1,4 @@
 import { Injectable } from '@nestjs/common';
-import { GetUsersParamDto } from '../dtos/get-users-param';
 import { Repository } from 'typeorm';
 import { User } from '../user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -30,8 +29,7 @@ export class UsersService {
     return newUser;
   }
 
-  findAll(getUsersParamDto: GetUsersParamDto, limit: number, page: number) {
-    const environtment = this.configService.get<string>('S3_BUCKET');
+  findAll() {
     return [
       { firstName: 'John', email: 'john@doe.com' },
       { firstName: 'Alice', email: 'alice@doe.com' },
