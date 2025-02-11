@@ -1,4 +1,9 @@
-import { Body, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Body,
+  Injectable,
+  RequestTimeoutException,
+} from '@nestjs/common';
 import { UsersService } from 'src/users/providers/users.service';
 import { CreatePostDTO } from '../dtos/create-post.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -7,6 +12,7 @@ import { Repository } from 'typeorm';
 import { MetaOption } from 'src/meta-options/meta-option.entity';
 import { TagsService } from 'src/tags/tags.service';
 import { PatchPostDto } from '../dtos/patch-post.dto';
+import { Tag } from 'src/tags/tag.entity';
 @Injectable()
 export class PostsService {
   constructor(
@@ -56,23 +62,43 @@ export class PostsService {
   }
 
   public async update(patchPostDto: PatchPostDto) {
+    let tags: Tag[] | null = null;
+    let posts: Post | null = null;
     // find the Tags
-    const tags = await this.tagsService.findMultipleTags(
-      patchPostDto.tags ?? [],
-    );
+    try {
+      tags = await this.tagsService.findMultipleTags(patchPostDto.tags);
+    } catch (error) {
+      throw new RequestTimeoutException(
+        'Unable to process your request at the moment please try again later',
+      );
+    }
+
+    if (!tags || tags.length !== (patchPostDto?.tags.length ?? [])) {
+      throw new BadRequestException(
+        'Please check your tag Ids and ensure they are correct',
+      );
+    }
+
     // find the post
-    const post =
-      (await this.postsRepository.findOneBy({
+    try {
+      posts = await this.postsRepository.findOneBy({
         id: patchPostDto.id,
-      })) ?? ({} as Post);
+      });
+    } catch (error) {
+      throw new RequestTimeoutException('Post not found');
+    }
+
+    if (!posts) {
+      throw new BadRequestException('The post ID does not exist');
+    }
     // update the properties
-    post.title = patchPostDto.title ?? post.title;
-    post.content = patchPostDto.content ?? post.content;
-    post.status = patchPostDto.status ?? post.status;
-    post.postType = patchPostDto.postType ?? post.postType;
-    post.slug = patchPostDto.slug ?? post.slug;
-    post.featuredImageUrl =
-      patchPostDto.featuredImageUrl ?? post.featuredImageUrl;
+    posts.title = patchPostDto.title ?? posts.title;
+    posts.content = patchPostDto.content ?? posts.content;
+    posts.status = patchPostDto.status ?? posts.status;
+    posts.postType = patchPostDto.postType ?? posts.postType;
+    posts.slug = patchPostDto.slug ?? posts.slug;
+    posts.featuredImageUrl =
+      patchPostDto.featuredImageUrl ?? posts.featuredImageUrl;
     post.publishOn = patchPostDto.publishOn ?? post.publishOn;
     // assign the new tags
     post.tags = tags;
