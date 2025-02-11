@@ -12,7 +12,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { CreateUserDto } from '../dtos/create-user.dto';
 import { ConfigType } from '@nestjs/config';
 import profileConfig from '../config/profile.config';
-import { response } from 'express';
+import { UsersCreateManyProvider } from './users-create-many.provider';
+import { CreateManyUsers } from '../dtos/create-many-users.dto';
 
 @Injectable()
 export class UsersService {
@@ -22,6 +23,8 @@ export class UsersService {
 
     @Inject(profileConfig.KEY)
     private readonly profileConfiguration: ConfigType<typeof profileConfig>,
+
+    private readonly usersCreateManyProvider: UsersCreateManyProvider,
   ) {}
 
   public async createUser(createUserDto: CreateUserDto) {
@@ -88,5 +91,9 @@ export class UsersService {
     }
 
     return await this.usersRepository.findOneBy({ id });
+  }
+
+  public async createManyUsers(createUserDto: CreateManyUsers) {
+    return await this.usersCreateManyProvider.createMany(createUserDto);
   }
 }

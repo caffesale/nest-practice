@@ -13,6 +13,9 @@ import { MetaOption } from 'src/meta-options/meta-option.entity';
 import { TagsService } from 'src/tags/tags.service';
 import { PatchPostDto } from '../dtos/patch-post.dto';
 import { Tag } from 'src/tags/tag.entity';
+import { GetPostsDto } from '../dtos/get-posts.dto';
+import { PaginationProvider } from 'src/common/pagination/providers/pagination.provider';
+import { Paginated } from 'src/common/pagination/interfaces/paginated.interface';
 @Injectable()
 export class PostsService {
   constructor(
@@ -23,6 +26,7 @@ export class PostsService {
     public readonly metaOptionsRepository: Repository<MetaOption>,
 
     public readonly tagsService: TagsService,
+    public readonly paginationProvider: PaginationProvider,
   ) {}
 
   public async create(@Body() createPostDTO: CreatePostDTO) {
@@ -45,14 +49,17 @@ export class PostsService {
     return await this.postsRepository.save(posts);
   }
 
-  public async findAll(userId: string) {
-    const posts = await this.postsRepository.find({
-      relations: {
-        metaOptions: true,
-        author: true,
-        tags: true,
+  public async findAll(
+    postQuery: GetPostsDto,
+    userId: string,
+  ): Promise<Paginated<Post>> {
+    const posts = await this.paginationProvider.paginatedQuery(
+      {
+        limit: postQuery.limit,
+        page: postQuery.page,
       },
-    });
+      this.postsRepository,
+    );
     return posts;
   }
 
@@ -99,10 +106,10 @@ export class PostsService {
     posts.slug = patchPostDto.slug ?? posts.slug;
     posts.featuredImageUrl =
       patchPostDto.featuredImageUrl ?? posts.featuredImageUrl;
-    post.publishOn = patchPostDto.publishOn ?? post.publishOn;
+    posts.publishOn = patchPostDto.publishOn ?? posts.publishOn;
     // assign the new tags
-    post.tags = tags;
+    posts.tags = tags;
     // save the post and return
-    return await this.postsRepository.save(post);
+    return await this.postsRepository.save(posts);
   }
 }
