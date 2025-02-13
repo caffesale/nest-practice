@@ -9,9 +9,6 @@ export class AuthService {
 
   public login(email: string, password: string, id: string) {
     return '';
-    // Check user exists database
-    // login
-    // token
   }
 
   public isAuth() {
