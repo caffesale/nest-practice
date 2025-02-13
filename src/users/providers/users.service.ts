@@ -14,6 +14,7 @@ import { ConfigType } from '@nestjs/config';
 import profileConfig from '../config/profile.config';
 import { UsersCreateManyProvider } from './users-create-many.provider';
 import { CreateManyUsers } from '../dtos/create-many-users.dto';
+import { CreateUserProvider } from './create-user.provider';
 
 @Injectable()
 export class UsersService {
@@ -25,35 +26,12 @@ export class UsersService {
     private readonly profileConfiguration: ConfigType<typeof profileConfig>,
 
     private readonly usersCreateManyProvider: UsersCreateManyProvider,
+
+    private readonly createUserProvider: CreateUserProvider,
   ) {}
 
   public async createUser(createUserDto: CreateUserDto) {
-    let existingUser: User | null;
-    try {
-      // Check if user exists with the same email
-      existingUser = await this.usersRepository.findOne({
-        where: { email: createUserDto.email },
-      });
-    } catch (error) {
-      throw new RequestTimeoutException(
-        'Unable to process your request at the moment, please try later',
-        { description: 'Database timeout or other error' },
-      );
-    }
-    if (existingUser) {
-      throw new BadRequestException('User already exists');
-    }
-
-    // Create a new user
-    const newUser = this.usersRepository.create(createUserDto);
-    try {
-      await this.usersRepository.save(newUser);
-    } catch (error) {
-      throw new RequestTimeoutException(
-        'Unable to process your request at the moment, please try later',
-        { description: 'Error connecting to the database' },
-      );
-    }
+    return this.createUserProvider.createUser(createUserDto);
   }
 
   findAll() {
