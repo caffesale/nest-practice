@@ -8,6 +8,9 @@ import {
 import { SignInDto } from '../dtos/signin.dto';
 import { UsersService } from 'src/users/providers/users.service';
 import { HashingProvider } from './hashing.provider';
+import { JwtService } from '@nestjs/jwt';
+import { ConfigType } from '@nestjs/config';
+import jwtConfig from '../config/jwt.config';
 
 @Injectable()
 export class SignInProvider {
@@ -16,6 +19,11 @@ export class SignInProvider {
     private readonly usersService: UsersService,
 
     private readonly hashingProvider: HashingProvider,
+
+    private readonly jwtService: JwtService,
+
+    @Inject(jwtConfig.KEY)
+    private readonly jwtConfiguration: ConfigType<typeof jwtConfig>,
   ) {}
 
   public async singIn(signInDto: SignInDto) {
@@ -38,6 +46,20 @@ export class SignInProvider {
       throw new UnauthorizedException('Incorrect email or password');
     }
 
-    return true;
+    // generate token
+    const accessToken = await this.jwtService.signAsync(
+      {
+        email: user.email,
+        sub: user.id,
+      },
+      {
+        audience: this.jwtConfiguration.audience,
+        issuer: this.jwtConfiguration.issuer,
+        secret: this.jwtConfiguration.secret,
+        expiresIn: this.jwtConfiguration.accessTokenTtl,
+      },
+    );
+
+    return { accessToken };
   }
 }
