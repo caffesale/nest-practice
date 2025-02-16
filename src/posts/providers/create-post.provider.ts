@@ -25,7 +25,6 @@ export class CreatePostProvider {
   ) {}
 
   public async create(createPostDTO: CreatePostDTO, user: ActiveUserData) {
-    // Find author from databse based on authorId
     let author: User | null = null;
     let tags: Tag[] | null = null;
     try {
