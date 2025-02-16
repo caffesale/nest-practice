@@ -69,8 +69,4 @@ export class CreatePostDTO {
   @ValidateNested({ each: true })
   @Type(() => CreatePostMetaOptionsDTO)
   metaOptions?: CreatePostMetaOptionsDTO;
-
-  @IsNotEmpty()
-  @IsInt()
-  authorId: number;
 }

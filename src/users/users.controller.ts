@@ -10,8 +10,6 @@ import {
   Param,
   Body,
   Query,
-  UseGuards,
-  SetMetadata,
 } from '@nestjs/common';
 import { CreateUserDto } from './dtos/create-user.dto';
 import { GetUsersParamDto } from './dtos/get-users-param';
@@ -19,7 +17,6 @@ import { PatchUserDto } from './dtos/patch-user.dto';
 import { UsersService } from './providers/users.service';
 import { ApiOperation, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { CreateManyUsers } from './dtos/create-many-users.dto';
-import { AccessTokenGuard } from 'src/auth/guards/access-token/access-token.guard';
 import { Auth } from 'src/auth/decorator/auth.decorator';
 import { AuthType } from 'src/auth/enums/auth-type.enum';
 
@@ -71,7 +68,6 @@ export class UsersController {
     return this.usersService.createUser(createUserDto);
   }
 
-  @UseGuards(AccessTokenGuard)
   @Post('create-many')
   public createManyUsers(@Body() createManyUsers: CreateManyUsers) {
     return this.usersService.createManyUsers(createManyUsers);
@@ -94,7 +90,6 @@ export class UsersController {
 
   @Patch()
   public patchUser(@Body() patchUserDto: PatchUserDto) {
-    console.log(patchUserDto);
     return 'You sent a patch require to users endpoint';
   }
 }

@@ -16,6 +16,8 @@ import { Tag } from 'src/tags/tag.entity';
 import { GetPostsDto } from '../dtos/get-posts.dto';
 import { PaginationProvider } from 'src/common/pagination/providers/pagination.provider';
 import { Paginated } from 'src/common/pagination/interfaces/paginated.interface';
+import { ActiveUserData } from 'src/auth/interfaces/active-user.interface';
+import { CreatePostProvider } from './create-post.provider';
 @Injectable()
 export class PostsService {
   constructor(
@@ -27,26 +29,11 @@ export class PostsService {
 
     public readonly tagsService: TagsService,
     public readonly paginationProvider: PaginationProvider,
+    public readonly createPostProvider: CreatePostProvider,
   ) {}
 
-  public async create(@Body() createPostDTO: CreatePostDTO) {
-    // Find author from databse based on authorId
-    const author = await this.usersService.findOneById(createPostDTO.authorId);
-
-    const tags = await this.tagsService.findMultipleTags(
-      createPostDTO.tags || [],
-    );
-
-    if (!author) {
-      throw new Error('author not exist');
-    }
-
-    const posts = this.postsRepository.create({
-      ...createPostDTO,
-      author: author,
-      tags,
-    });
-    return await this.postsRepository.save(posts);
+  public async create(createPostDTO: CreatePostDTO, user: ActiveUserData) {
+    return await this.createPostProvider.create(createPostDTO, user);
   }
 
   public async findAll(

@@ -11,6 +11,7 @@ import { HashingProvider } from './hashing.provider';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigType } from '@nestjs/config';
 import jwtConfig from '../config/jwt.config';
+import { ActiveUserData } from '../interfaces/active-user.interface';
 
 @Injectable()
 export class SignInProvider {
@@ -51,7 +52,7 @@ export class SignInProvider {
       {
         email: user.email,
         sub: user.id,
-      },
+      } as ActiveUserData,
       {
         audience: this.jwtConfiguration.audience,
         issuer: this.jwtConfiguration.issuer,
