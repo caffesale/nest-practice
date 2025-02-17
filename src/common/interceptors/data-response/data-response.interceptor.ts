@@ -13,7 +13,7 @@ export class DataResponseInterceptor implements NestInterceptor {
   intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
     console.log('Before...');
     return next.handle().pipe(
-      map<any, { apiVersion: string | undefined; data: unknown }>(
+      map<unknown, { apiVersion: string | undefined; data: unknown }>(
         (data: unknown) => ({
           apiVersion: this.configService.get('appConfig.apiVersion'),
           data: { data },
