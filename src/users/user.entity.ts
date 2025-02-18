@@ -17,7 +17,7 @@ export class User {
   @Column({
     type: 'varchar',
     length: 96,
-    nullable: true,
+    nullable: false,
   })
   lastName: string;
 
@@ -38,5 +38,5 @@ export class User {
   password: string;
 
   @OneToMany(() => Post, (post) => post.author)
-  posts: Post[];
+  posts?: Post[];
 }

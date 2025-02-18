@@ -52,5 +52,7 @@ export class CreateUserProvider {
         { description: 'Error connecting to the database' },
       );
     }
+
+    return newUser;
   }
 }
