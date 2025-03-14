@@ -25,6 +25,7 @@ import { FindOneUserByEmailProvider } from './providers/find-one-user-by-email.p
     TypeOrmModule.forFeature([User]),
     ConfigModule.forFeature(profileConfig),
     forwardRef(() => AuthModule),
+    // MongooseModule.forFeature([{ name: User.name, schema: UserSchema }]),
   ],
 })
 export class UsersModule {}
